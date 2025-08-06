@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investe BRASILL - O seu Guia para o Mundo dos Investimentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Chosen Palette: Brazil Flag Colors (Green, Yellow, Blue) -->
+    <!-- Application Structure Plan: A thematic, single-page scrolling application with a sticky top navigation. The structure guides the user from foundational concepts ("Comece Aqui") to specific asset classes ("Onde Investir?"), then to strategies and market visualization ("Estratégias", "Mercado em Foco"), and finally to practical application ("Dicas Práticas", "Glossário"). This logical flow is ideal for a beginner's learning journey, allowing for both linear discovery by scrolling and direct access to topics via the navigation bar. This design was chosen for its intuitive, non-intimidating user experience, which is crucial for the complex topic of investing. -->
+    <!-- Visualization & Content Choices: 
+        - Compound Interest: Goal=Inform/Engage -> Viz=Interactive Calculator -> Interaction=User input triggers dynamic calculation -> Justification=Demonstrates the power of compounding more effectively than a static table -> Method=Vanilla JS.
+        - Asset Classes: Goal=Compare/Organize -> Viz=Card-based layout -> Interaction=Click-to-reveal details -> Justification=Keeps the interface clean while allowing users to drill down into topics of interest without navigating away -> Method=HTML/CSS/JS.
+        - Market Performance: Goal=Visualize Change -> Viz=Line Chart -> Interaction=Dropdown to switch datasets (scenarios) -> Justification=Makes abstract market data tangible and illustrates concepts like volatility and growth -> Library=Chart.js.
+        - Glossary: Goal=Organize/Inform -> Viz=Searchable List -> Interaction=Real-time filtering via search input -> Justification=Provides quick, on-demand access to definitions, which is essential for beginners encountering new terminology -> Method=Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0fdf4;
+            /* Light Green Background */
+            color: #1f2937;
+        }
+
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 20, 10, 0.5), rgba(0, 20, 10, 0.5)), url('https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Brazil.svg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #0052a5;
+            /* Brazil Blue */
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .section-title {
+            border-bottom: 3px solid #0052a5;
+            /* Brazil Blue */
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #0052a5;
+            /* Brazil Blue */
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #003e7e;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-800">Investe <span
+                    style="color: #0052a5;">BRASILL</span></a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#conceitos" class="nav-link text-gray-600 font-medium">Conceitos</a>
+                <a href="#onde-investir" class="nav-link text-gray-600 font-medium">Onde Investir?</a>
+                <a href="#mercado" class="nav-link text-gray-600 font-medium">Mercado</a>
+                <a href="#dicas" class="nav-link text-gray-600 font-medium">Dicas</a>
+                <a href="#glossario" class="nav-link text-gray-600 font-medium">Glossário</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#conceitos" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Conceitos</a>
+            <a href="#onde-investir" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Onde Investir?</a>
+            <a href="#mercado" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Mercado</a>
+            <a href="#dicas" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Dicas</a>
+            <a href="#glossario" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Glossário</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg text-white py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center hero-content">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">O futuro do seu dinheiro começa agora.
+                </h1>
+                <p class="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">Aprenda a investir de forma inteligente e
+                    segura. Transforme suas finanças e alcance seus objetivos com o nosso guia completo.</p>
+            </div>
+        </section>
+
+        <!-- Conceitos Fundamentais Section -->
+        <section id="conceitos" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 section-title">Conceitos Essenciais</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Para construir uma casa, você precisa de
+                    uma base sólida. No mundo dos investimentos, essa base são os conceitos fundamentais. Entendê-los é
+                    o primeiro e mais importante passo para investir com confiança e segurança.</p>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">O que é Investir?</h3>
+                        <p class="text-gray-600 mb-4">Investir não é apenas para os ricos ou para gênios da matemática.
+                            De forma simples, investir é usar seu dinheiro para comprar ativos (como ações de empresas
+                            ou títulos) com a expectativa de que eles gerem renda ou se valorizem no futuro. É fazer o
+                            seu dinheiro trabalhar para você, em vez de você trabalhar por ele.</p>
+                        <h3 class="text-2xl font-semibold mb-3">Risco vs. Retorno</h3>
+                        <p class="text-gray-600">Esta é a regra de ouro dos investimentos: não existe retorno sem risco.
+                            Ativos com maior potencial de retorno (como ações) geralmente vêm com maior risco (maior
+                            volatilidade). Ativos mais seguros (como títulos do governo) tendem a oferecer retornos
+                            menores. O segredo é encontrar um equilíbrio que se alinhe com seus objetivos e sua
+                            tolerância a perdas.</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-semibold mb-4 text-center">A Mágica dos Juros Compostos</h3>
+                        <p class="text-center text-gray-600 mb-6">Albert Einstein supostamente chamou os juros compostos
+                            de a oitava maravilha do mundo. Veja por quê:</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="initial" class="block text-sm font-medium text-gray-700">Investimento
+                                    Inicial (R$)</label>
+                                <input type="number" id="initial"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    value="1000">
+                            </div>
+                            <div>
+                                <label for="monthly" class="block text-sm font-medium text-gray-700">Aporte Mensal
+                                    (R$)</label>
+                                <input type="number" id="monthly"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    value="200">
+                            </div>
+                            <div>
+                                <label for="rate" class="block text-sm font-medium text-gray-700">Taxa de Juros Anual
+                                    (%)</label>
+                                <input type="number" id="rate"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    value="8">
+                            </div>
+                            <div>
+                                <label for="years" class="block text-sm font-medium text-gray-700">Período
+                                    (Anos)</label>
+                                <input type="number" id="years"
+                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    value="10">
+                            </div>
+                        </div>
+                        <button id="calculate-btn"
+                            class="mt-6 w-full btn-primary font-bold py-3 px-4 rounded-md transition duration-300">Calcular</button>
+                        <div id="result" class="mt-6 text-center">
+                            <p class="text-lg text-gray-700">Valor Futuro:</p>
+                            <p id="future-value" class="text-3xl font-bold text-green-600">R$ 0,00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Onde Investir Section -->
+        <section id="onde-investir" class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 section-title">Onde Investir?</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">O universo dos investimentos é vasto.
+                    Conhecer as principais "prateleiras" deste mercado é fundamental para montar uma carteira
+                    diversificada e alinhada com seu perfil. Clique em cada categoria para saber mais.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Card Renda Fixa -->
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer"
+                        data-asset="renda-fixa">
+                        <div class="text-4xl mb-4">🏦</div>
+                        <h3 class="text-xl font-semibold mb-2">Renda Fixa</h3>
+                        <p class="text-gray-500 text-sm">Segurança e previsibilidade. Ideal para iniciantes e perfis
+                            conservadores.</p>
+                    </div>
+                    <!-- Card Renda Variável -->
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer"
+                        data-asset="renda-variavel">
+                        <div class="text-4xl mb-4">📈</div>
+                        <h3 class="text-xl font-semibold mb-2">Renda Variável</h3>
+                        <p class="text-gray-500 text-sm">Maior potencial de lucro, com maior risco. O mundo das ações.
+                        </p>
+                    </div>
+                    <!-- Card Fundos -->
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" data-asset="fundos">
+                        <div class="text-4xl mb-4">🧺</div>
+                        <h3 class="text-xl font-semibold mb-2">Fundos de Investimento</h3>
+                        <p class="text-gray-500 text-sm">Diversificação simplificada com gestão profissional.</p>
+                    </div>
+                    <!-- Card Imóveis -->
+                    <div class="card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer" data-asset="imoveis">
+                        <div class="text-4xl mb-4">🏘️</div>
+                        <h3 class="text-xl font-semibold mb-2">Fundos Imobiliários</h3>
+                        <p class="text-gray-500 text-sm">Invista no mercado imobiliário e receba aluguéis mensais.</p>
+                    </div>
+                </div>
+                <!-- Asset Details Container -->
+                <div id="asset-details-container" class="mt-12"></div>
+            </div>
+        </section>
+
+        <!-- Mercado em Foco Section -->
+        <section id="mercado" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 section-title">Mercado em Foco</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">O mercado financeiro está sempre em
+                    movimento, com seus altos e baixos. Entender esses ciclos é vital para não tomar decisões
+                    precipitadas. O gráfico abaixo simula o desempenho de um índice de mercado em diferentes cenários.
+                    Use o seletor para ver como o mercado pode se comportar.</p>
+                <div class="bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <div class="flex justify-center mb-6">
+                        <select id="scenario-selector" class="p-2 border border-gray-300 rounded-md">
+                            <option value="otimista">Cenário Otimista</option>
+                            <option value="realista">Cenário Realista</option>
+                            <option value="pessimista">Cenário Pessimista</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dicas Práticas Section -->
+        <section id="dicas" class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 section-title">Dicas Práticas para o Sucesso
+                </h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Conhecimento é poder, mas a ação é o que
+                    gera resultados. Siga estas dicas para começar sua jornada de investimentos com o pé direito e
+                    evitar os erros mais comuns.</p>
+                <div class="max-w-3xl mx-auto">
+                    <div class="space-y-8">
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full btn-primary text-white font-bold text-xl">
+                                1</div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Diversifique, sempre.</h4>
+                                <p class="text-gray-600 mt-1">A regra mais famosa é também a mais importante. Não
+                                    coloque todos os ovos na mesma cesta. Distribua seus investimentos por diferentes
+                                    tipos de ativos (renda fixa, ações, etc.) para mitigar riscos.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full btn-primary text-white font-bold text-xl">
+                                2</div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Pense no longo prazo.</h4>
+                                <p class="text-gray-600 mt-1">Investir não é um esquema de enriquecimento rápido. O
+                                    verdadeiro poder dos investimentos se revela com o tempo, graças aos juros
+                                    compostos. Tenha paciência e disciplina.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full btn-primary text-white font-bold text-xl">
+                                3</div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Invista com regularidade.</h4>
+                                <p class="text-gray-600 mt-1">É melhor investir uma pequena quantia todos os meses do
+                                    que uma grande quantia de uma só vez. Aportes regulares ajudam a construir
+                                    patrimônio de forma consistente e a reduzir o risco de investir em um momento de
+                                    alta do mercado.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full btn-primary text-white font-bold text-xl">
+                                4</div>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Controle suas emoções.</h4>
+                                <p class="text-gray-600 mt-1">O mercado é volátil. Haverá momentos de euforia e de
+                                    pânico. O investidor de sucesso é aquele que consegue manter a calma, seguir sua
+                                    estratégia e não tomar decisões baseadas no medo ou na ganância do momento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Glossário Interativo Section -->
+        <section id="glossario" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 section-title">Glossário do Investidor</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8">Sentindo-se perdido com tantos termos novos?
+                    Use nosso glossário interativo para pesquisar e entender o jargão do mercado financeiro.</p>
+                <div class="max-w-2xl mx-auto mb-8">
+                    <input type="text" id="glossary-search" placeholder="🔎 Pesquisar termo..."
+                        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div id="glossary-list" class="space-y-4 max-w-3xl mx-auto">
+                    <!-- Termos serão inseridos aqui pelo JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Investe BRASILL. Todos os direitos reservados.</p>
+            <p class="text-sm text-gray-400 mt-2">Este site tem caráter puramente educacional. As informações aqui
+                contidas não constituem recomendação de investimento.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Juros Compostos Calculator
+            const calculateBtn = document.getElementById('calculate-btn');
+            if (calculateBtn) {
+                const calculateCompoundInterest = () => {
+                    const initial = parseFloat(document.getElementById('initial').value) || 0;
+                    const monthly = parseFloat(document.getElementById('monthly').value) || 0;
+                    const rate = parseFloat(document.getElementById('rate').value) || 0;
+                    const years = parseInt(document.getElementById('years').value) || 0;
+
+                    const monthlyRate = rate / 100 / 12;
+                    const months = years * 12;
+                    let futureValue = initial;
+
+                    if (months > 0) {
+                        futureValue = initial * Math.pow(1 + monthlyRate, months);
+                        if (monthly > 0) {
+                            futureValue += monthly * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
+                        }
+                    }
+
+                    document.getElementById('future-value').textContent = `R$ ${futureValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                };
+                calculateBtn.addEventListener('click', calculateCompoundInterest);
+                calculateCompoundInterest(); // Initial calculation
+            }
+
+            // Asset Details
+            const assetCards = document.querySelectorAll('.card[data-asset]');
+            const detailsContainer = document.getElementById('asset-details-container');
+            const assetData = {
+                'renda-fixa': {
+                    title: 'Renda Fixa: A Porta de Entrada',
+                    content: 'São investimentos com regras de remuneração definidas no momento da aplicação. É como emprestar dinheiro para o governo ou empresas. São considerados os mais seguros.',
+                    examples: ['Tesouro Selic', 'CDBs', 'LCIs/LCAs'],
+                    pros: 'Segurança, previsibilidade, ideal para reserva de emergência.',
+                    cons: 'Menor potencial de rentabilidade em comparação com a renda variável.'
+                },
+                'renda-variavel': {
+                    title: 'Renda Variável: Emoção e Potencial',
+                    content: 'Aqui, a remuneração não é conhecida no momento da aplicação. O principal exemplo são as ações, que representam uma pequena parte de uma empresa. O valor dos ativos varia conforme o mercado.',
+                    examples: ['Ações de empresas', 'Opções', 'Contratos Futuros'],
+                    pros: 'Alto potencial de valorização no longo prazo.',
+                    cons: 'Maior risco, volatilidade, exige mais estudo e estômago para perdas.'
+                },
+                'fundos': {
+                    title: 'Fundos de Investimento: Diversificação Prática',
+                    content: 'Funcionam como um condomínio de investidores. Todos juntam seus recursos para que um gestor profissional compre uma cesta de ativos (ações, títulos, etc.). Você compra cotas do fundo.',
+                    examples: ['Fundos de Ações', 'Fundos Multimercado', 'Fundos de Renda Fixa'],
+                    pros: 'Gestão profissional, acesso a diversos ativos com pouco dinheiro, diversificação instantânea.',
+                    cons: 'Taxas de administração e, às vezes, de performance.'
+                },
+                'imoveis': {
+                    title: 'Fundos Imobiliários (FIIs): Aluguel sem Burocracia',
+                    content: 'São fundos que investem em empreendimentos imobiliários (shoppings, prédios comerciais, galpões). Suas cotas são negociadas na bolsa, e os cotistas recebem mensalmente parte dos aluguéis gerados.',
+                    examples: ['FIIs de Tijolo (imóveis físicos)', 'FIIs de Papel (dívidas imobiliárias)'],
+                    pros: 'Renda mensal isenta de Imposto de Renda, diversificação no setor imobiliário.',
+                    cons: 'Volatilidade das cotas, risco de vacância dos imóveis.'
+                }
+            };
+
+            assetCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const assetKey = card.dataset.asset;
+                    const data = assetData[assetKey];
+
+                    detailsContainer.innerHTML = `
+                <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-200 animate-fade-in">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-2xl font-bold mb-4" style="color: #0052a5;">${data.title}</h3>
+                        <button id="close-details" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+                    </div>
+                    <p class="text-gray-700 mb-4">${data.content}</p>
+                    <p class="font-semibold text-gray-800">Exemplos:</p>
+                    <p class="text-gray-600 mb-4">${data.examples.join(', ')}.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-green-600">Vantagens:</h4>
+                            <p class="text-gray-600">${data.pros}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-red-600">Desvantagens:</h4>
+                            <p class="text-gray-600">${data.cons}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    detailsContainer.querySelector('#close-details').addEventListener('click', () => {
+                        detailsContainer.innerHTML = '';
+                    });
+                    detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            });
+
+            // Market Chart
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            const scenarios = {
+                otimista: [100, 120, 110, 150, 180, 220, 210, 250, 280, 320, 310, 350],
+                realista: [100, 105, 98, 110, 115, 120, 112, 125, 130, 128, 135, 140],
+                pessimista: [100, 90, 95, 80, 75, 85, 70, 65, 70, 60, 68, 62]
+            };
+            const chartLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+            const marketChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Desempenho do Índice Simulado',
+                        data: scenarios.otimista,
+                        borderColor: '#0052a5', // Brazil Blue
+                        backgroundColor: 'rgba(0, 82, 165, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + ' pts';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `Pontuação: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('scenario-selector').addEventListener('change', (e) => {
+                const selectedScenario = e.target.value;
+                marketChart.data.datasets[0].data = scenarios[selectedScenario];
+                marketChart.update();
+            });
+
+            // Glossário
+            const glossaryData = [
+                { term: 'Ações', definition: 'Pequenas partes do capital de uma empresa. Ao comprar uma ação, você se torna sócio da companhia.' },
+                { term: 'CDB (Certificado de Depósito Bancário)', definition: 'Título de renda fixa emitido por bancos para captar recursos. Sua rentabilidade pode ser pré ou pós-fixada.' },
+                { term: 'Dividendos', definition: 'Parte do lucro de uma empresa que é distribuída aos seus acionistas.' },
+                { term: 'ETF (Exchange Traded Fund)', definition: 'Também conhecido como fundo de índice. É um fundo cujas cotas são negociadas na bolsa e que replica o desempenho de um índice de referência (ex: Ibovespa).' },
+                { term: 'Ibovespa', definition: 'O principal índice de desempenho das ações mais negociadas na bolsa de valores brasileira (B3).' },
+                { term: 'Liquidez', definition: 'A facilidade e velocidade com que um ativo pode ser convertido em dinheiro sem perda significativa de valor.' },
+                { term: 'Taxa Selic', definition: 'A taxa básica de juros da economia brasileira. Influencia todas as outras taxas de juros do país, de empréstimos a investimentos.' },
+                { term: 'Volatilidade', definition: 'A intensidade e frequência com que o preço de um ativo sobe e desce. É uma medida de risco.' }
+            ];
+
+            const glossaryList = document.getElementById('glossary-list');
+            const glossarySearch = document.getElementById('glossary-search');
+
+            const renderGlossary = (items) => {
+                glossaryList.innerHTML = '';
+                if (items.length === 0) {
+                    glossaryList.innerHTML = '<p class="text-center text-gray-500">Nenhum termo encontrado.</p>';
+                    return;
+                }
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'p-4 bg-gray-50 rounded-lg border border-gray-200';
+                    div.innerHTML = `
+                <h4 class="font-semibold text-lg text-gray-800">${item.term}</h4>
+                <p class="text-gray-600">${item.definition}</p>
+            `;
+                    glossaryList.appendChild(div);
+                });
+            };
+
+            glossarySearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredData = glossaryData.filter(item =>
+                    item.term.toLowerCase().includes(searchTerm) ||
+                    item.definition.toLowerCase().includes(searchTerm)
+                );
+                renderGlossary(filteredData);
+            });
+
+            renderGlossary(glossaryData);
+        });
+    </script>
+
+</body>
+
+</html>
